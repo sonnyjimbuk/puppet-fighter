@@ -1,10 +1,14 @@
 using UnityEngine;
 
+public float xPos;
+public float yPos;
+
 public class MarionetteControl : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         GameObject centerJoint = GameObject.Find("crossbar/Joints/center");
         GameObject leftArmJoint = GameObject.Find("crossbar/Joints/arm_L");
         GameObject rightArmJoint = GameObject.Find("crossbar/Joints/arm_R");
