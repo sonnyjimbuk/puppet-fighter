@@ -3,14 +3,23 @@ using UnityEngine.InputSystem;
 
 public class MarionetteControl : MonoBehaviour
 {
-    public float xPos;
-    public float yPos;
+    float xPos;
+    float yPos;
 
-    public float xRot;
-    public float yRot;
+    float xRot;
+    float yRot;
 
-    public float xForce;
-    public float yForce;
+    float xForce;
+    float yForce;
+    
+    public float xForceMultiplier;
+    public float yForceMultiplier;
+
+    public float yMaxRotationMultiplier;
+    public float xMaxRotationMultiplier;
+
+    public float yRotationSpeed;
+    public float xRotationSpeed;
 
     GameObject centerJoint;
     GameObject leftArmJoint; 
@@ -19,6 +28,8 @@ public class MarionetteControl : MonoBehaviour
     GameObject rightLegJoint;
 
     Vector2 movementInput;
+
+
 
     void Awake()
     {
@@ -54,23 +65,39 @@ public class MarionetteControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        yForce = movementInput.y * 20f;
-        xForce = movementInput.x * 20f;
+        yForce = movementInput.y * xForceMultiplier;
+        xForce = movementInput.x * yForceMultiplier;
 
         yPos += yForce * Time.deltaTime;
-        xPos += xForce * Time.deltaTime;   
+        xPos += xForce * Time.deltaTime;
 
-        if (yForce > yRot)
+        float maxYRot = yForceMultiplier * yMaxRotationMultiplier;
+        float maxXRot = xForceMultiplier * xMaxRotationMultiplier;
+
+        if (maxYRot < yRot)
         {
-            yRot += 5f;
+            yRot += yRotationSpeed * Time.deltaTime;
+            Mathf.Clamp(yRot, maxYRot, -1 * yMaxRotationMultiplier * yForce);
         }
         else
         {
-            yRot -= 5f;
+            yRot -= yRotationSpeed * Time.deltaTime;
+            Mathf.Clamp(yRot, yMaxRotationMultiplier * yForce, -maxYRot);
+        }
+
+        if (maxXRot < xRot)
+        {
+            xRot += xRotationSpeed * Time.deltaTime;
+            Mathf.Clamp(xRot, maxXRot, -1 * xMaxRotationMultiplier * xForce);
+        }
+        else
+        {
+            xRot -= xRotationSpeed * Time.deltaTime;
+            Mathf.Clamp(xRot, xMaxRotationMultiplier * xForce, -maxXRot);
         }
 
         centerJoint.transform.localPosition = new Vector3(xPos, yPos, 0);
-        centerJoint.transform.localRotation = Quaternion.Euler(-60 + yForce, xForce, 0);
+        centerJoint.transform.localRotation = Quaternion.Euler(-60 + yRot, xRot, 0);
 
     }
 }
