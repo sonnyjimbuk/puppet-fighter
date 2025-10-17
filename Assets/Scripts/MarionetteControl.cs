@@ -18,8 +18,7 @@ public class MarionetteControl : MonoBehaviour
     public float yMaxRotationMultiplier;
     public float xMaxRotationMultiplier;
 
-    public float yRotationSpeed;
-    public float xRotationSpeed;
+    public float rotationSpeed;
 
     GameObject centerJoint;
     GameObject leftArmJoint; 
@@ -66,38 +65,19 @@ public class MarionetteControl : MonoBehaviour
     void Update()
     {
         yForce = movementInput.y * xForceMultiplier;
-        xForce = movementInput.x * yForceMultiplier;
+        xForce = -1 * movementInput.x * yForceMultiplier;
 
         yPos += yForce * Time.deltaTime;
         xPos += xForce * Time.deltaTime;
 
-        float maxYRot = yForceMultiplier * yMaxRotationMultiplier;
-        float maxXRot = xForceMultiplier * xMaxRotationMultiplier;
+        float targetYRot = yForce * yMaxRotationMultiplier;
+        float targetXRot = xForce * xMaxRotationMultiplier;
 
-        if (maxYRot < yRot)
-        {
-            yRot += yRotationSpeed * Time.deltaTime;
-            Mathf.Clamp(yRot, maxYRot, -1 * yMaxRotationMultiplier * yForce);
-        }
-        else
-        {
-            yRot -= yRotationSpeed * Time.deltaTime;
-            Mathf.Clamp(yRot, yMaxRotationMultiplier * yForce, -maxYRot);
-        }
-
-        if (maxXRot < xRot)
-        {
-            xRot += xRotationSpeed * Time.deltaTime;
-            Mathf.Clamp(xRot, maxXRot, -1 * xMaxRotationMultiplier * xForce);
-        }
-        else
-        {
-            xRot -= xRotationSpeed * Time.deltaTime;
-            Mathf.Clamp(xRot, xMaxRotationMultiplier * xForce, -maxXRot);
-        }
+        Vector3 targetRotation = new Vector3(-15 - targetYRot, 0, -1 * targetXRot);
 
         centerJoint.transform.localPosition = new Vector3(xPos, yPos, 0);
-        centerJoint.transform.localRotation = Quaternion.Euler(-60 + yRot, xRot, 0);
+        centerJoint.transform.localRotation = Quaternion.RotateTowards(centerJoint.transform.localRotation, Quaternion.Euler(targetRotation), rotationSpeed *  Time.deltaTime);
+
 
     }
 }
