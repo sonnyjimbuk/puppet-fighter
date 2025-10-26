@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 11d702bc62f67d44b80ac56fbcef5532
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Scripts/MTR_BoneControl.cs
+  uploadId: 653610

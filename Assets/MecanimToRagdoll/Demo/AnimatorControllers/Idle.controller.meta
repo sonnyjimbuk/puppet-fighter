@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fc76363b404fb254393abc79a26359d7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/AnimatorControllers/Idle.controller
+  uploadId: 653610

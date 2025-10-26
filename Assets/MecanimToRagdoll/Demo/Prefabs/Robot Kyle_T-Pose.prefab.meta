@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6d4482b3b58714b4bbb979b5e8484f2d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Prefabs/Robot Kyle_T-Pose.prefab
+  uploadId: 653610

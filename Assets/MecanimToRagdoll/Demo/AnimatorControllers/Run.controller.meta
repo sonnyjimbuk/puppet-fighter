@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cab0cfce0fd1edd4eba4e4ed4cfa5ab6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/AnimatorControllers/Run.controller
+  uploadId: 653610

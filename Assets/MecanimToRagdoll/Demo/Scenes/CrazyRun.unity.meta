@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: bf833a433193f7d42b8a2075724a5c68
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Scenes/CrazyRun.unity
+  uploadId: 653610

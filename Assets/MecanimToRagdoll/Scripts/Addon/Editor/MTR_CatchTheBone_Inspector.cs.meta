@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 903d78aef78199d41be837322daf1dc3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - MecanimPic: {fileID: 2800000, guid: 78615b9843d311e48967c239732af627, type: 3}
+  - MecanimDotR: {fileID: 2800000, guid: f897cf09f3607f74b906eb14e2707da4, type: 3}
+  - MecanimDotS: {fileID: 2800000, guid: ccd89020b903c3540acc331a982b21ea, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Scripts/Addon/Editor/MTR_CatchTheBone_Inspector.cs
+  uploadId: 653610

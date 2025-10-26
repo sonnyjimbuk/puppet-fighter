@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bdcefa26b9483b94abbea5f33519c987
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Prefabs/Default Muscle Limits/Robot Kyle
+    Manual arrangement of colliders.prefab
+  uploadId: 653610

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d7039ffe8e764584cb7a995565584cfa
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Animations/DefaultAvatar@StandingUp_FromBack.anim
+  uploadId: 653610
