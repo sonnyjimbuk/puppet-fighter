@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 379156263}
   - component: {fileID: 379156262}
   - component: {fileID: 379156264}
+  - component: {fileID: 379156265}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -149,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2032b21f040e0be49959776225ee167a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puppetName: miki
+  puppetName: lady marmalade
   xForceMultiplier: 20
   yForceMultiplier: 20
   yMaxRotationMultiplier: 3
@@ -159,7 +160,7 @@ MonoBehaviour:
   headStringLength: 0.8
   armsStringLength: 1.2
   legsStringLength: 2.4
-  tensionMultiplier: 0.0001
+  tensionMultiplier: 40
 --- !u!4 &379156263
 Transform:
   m_ObjectHideFlags: 0
@@ -207,6 +208,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &379156265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379156261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6268874109cdc594caac00d3b961d9a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &627392386
 PrefabInstance:
   m_ObjectHideFlags: 0

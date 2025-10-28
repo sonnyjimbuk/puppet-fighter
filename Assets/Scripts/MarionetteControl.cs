@@ -5,6 +5,7 @@ public class MarionetteControl : MonoBehaviour
 {
     // name of the puppet, used to pull the correct model from resources
     public string puppetName;
+    string tempPuppetName;
     GameObject puppetModel;
     Transform modelTransform;
     private Animator animator;
@@ -66,7 +67,8 @@ public class MarionetteControl : MonoBehaviour
     void Start()
     {
         modelTransform = transform.Find("Model");
-        puppetModel = SwapModel(puppetName, puppetModel, modelTransform, animator);
+        SwapModel();
+        tempPuppetName = puppetName;
 
         crossbarCenterJoint = transform.Find("crossbar/Joints/center").gameObject;
         crossbarLeftArmJoint = transform.Find("crossbar/Joints/center/arm_L").gameObject;
@@ -76,35 +78,6 @@ public class MarionetteControl : MonoBehaviour
 
         xPos = startingPosition.x;
         yPos = startingPosition.y;
-
-
-        //get all joints from the model where the "strings" will be attached
-        //assuming a specific hierarchy here - will need to be adjusted based on model naming conventions
-        if (animator == null)
-        {
-            animator = puppetModel.GetComponent<Animator>();
-            if (animator == null)
-            {
-                Debug.Log("Animator component not found on the puppet model!");
-            }
-        }
-        modelCenterJoint = animator.GetBoneTransform(HumanBodyBones.Head).gameObject;
-        modelLeftArmJoint = animator.GetBoneTransform(HumanBodyBones.LeftHand).gameObject;
-        modelRightArmJoint = animator.GetBoneTransform(HumanBodyBones.RightHand).gameObject;
-        modelLeftLegJoint = animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg).gameObject;
-        modelRightLegJoint = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg).gameObject;
-
-        //get rigidbodies for each joint: forces will be applied to these
-        /*centerRigidbody = modelCenterJoint.GetComponent<Rigidbody>();
-        leftArmRigidbody = modelLeftArmJoint.GetComponent<Rigidbody>();
-        rightArmRigidbody = modelRightArmJoint.GetComponent<Rigidbody>();
-        leftLegRigidbody = modelLeftLegJoint.GetComponent<Rigidbody>();
-        rightLegRigidbody = modelRightLegJoint.GetComponent<Rigidbody>();
-
-        if (centerRigidbody == null)
-        {
-            Debug.Log("Center Rigidbody not found!");
-        }*/
 
 
     }
@@ -125,6 +98,12 @@ public class MarionetteControl : MonoBehaviour
             leftLegRigidbody = modelLeftLegJoint.GetComponent<Rigidbody>();
             rightLegRigidbody = modelRightLegJoint.GetComponent<Rigidbody>();
         }
+
+        if (puppetName != tempPuppetName)
+        {
+            SwapModel();
+        }
+        tempPuppetName = puppetName;
 
         yForce = movementInput.y * xForceMultiplier;
         xForce = -1 * movementInput.x * yForceMultiplier;
@@ -147,27 +126,41 @@ public class MarionetteControl : MonoBehaviour
         leftLegRigidbody.AddForce(CalculateTension(crossbarLeftLegJoint.transform.position, modelLeftLegJoint.transform.position, legsStringLength, tensionMultiplier));
         rightLegRigidbody.AddForce(CalculateTension(crossbarRightLegJoint.transform.position, modelRightLegJoint.transform.position, legsStringLength, tensionMultiplier));
 
-
     }
 
-    GameObject SwapModel(string puppetName, GameObject puppetModel, Transform modelTransform, Animator animator)
+    void SwapModel()
     {
-        if (puppetModel != null)
-        {
-            Destroy(puppetModel);
+        GameObject newModel = Resources.Load<GameObject>("PuppetModels/" + puppetName);
+
+        if (newModel == null) {
+            Debug.Log("Puppet model " + puppetName + " not found in Resources/PuppetModels/");
+            return;
         }
-        GameObject newModel = Resources.Load<GameObject>("PuppetModels/" + puppetName); 
-        if (newModel == null)
-        {
-            Debug.Log("Model to be loaded not found!");
-        }
+
         GameObject newModelInstantiated = Instantiate(newModel, modelTransform);
         animator = newModelInstantiated.GetComponent<Animator>();
+
+        GameObject puppetModelOld = puppetModel;
+        puppetModel = newModelInstantiated;
+        Destroy(puppetModelOld);
+
+        //get all joints from the model where the "strings" will be attached
+        //assuming a specific hierarchy here - will need to be adjusted based on model naming conventions
         if (animator == null)
         {
-            Debug.Log("Animator component not found on the new model!");
+            animator = puppetModel.GetComponent<Animator>();
+            if (animator == null)
+            {
+                Debug.Log("Animator component not found on the puppet model!");
+            }
         }
-        return newModelInstantiated;
+
+        modelCenterJoint = animator.GetBoneTransform(HumanBodyBones.Head).gameObject;
+        modelLeftArmJoint = animator.GetBoneTransform(HumanBodyBones.LeftHand).gameObject;
+        modelRightArmJoint = animator.GetBoneTransform(HumanBodyBones.RightHand).gameObject;
+        modelLeftLegJoint = animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg).gameObject;
+        modelRightLegJoint = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg).gameObject;
+
     }
 
     Vector3 CalculateTension(Vector3 crossbarJointPosition, Vector3 modelJointPosition, float baseLength, float tensionMultiplier)
