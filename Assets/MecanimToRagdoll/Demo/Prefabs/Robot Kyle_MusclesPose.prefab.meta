@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8b2816ca91251674b94311c6812df06b
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Prefabs/Robot Kyle_MusclesPose.prefab
+  uploadId: 653610

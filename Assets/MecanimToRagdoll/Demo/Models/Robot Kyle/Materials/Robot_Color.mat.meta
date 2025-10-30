@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0aa851515cd3747d6b3b3e461199a2ed
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Models/Robot Kyle/Materials/Robot_Color.mat
+  uploadId: 653610

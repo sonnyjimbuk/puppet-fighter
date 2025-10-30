@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 2cd0e8b6433c4e443ad409965df7e4a0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - MecanimPic: {fileID: 2800000, guid: 78615b9843d311e48967c239732af627, type: 3}
+  - MecanimDotR: {fileID: 2800000, guid: f897cf09f3607f74b906eb14e2707da4, type: 3}
+  - MecanimDotB: {fileID: 2800000, guid: 4c02e9940215b3c47b8ffad3cae9ead3, type: 3}
+  - MecanimDotS: {fileID: 2800000, guid: ccd89020b903c3540acc331a982b21ea, type: 3}
+  - storeIcon: {fileID: 2800000, guid: 6b375e1872ef76c449f71ba9a8f20f17, type: 3}
+  - forumIcon: {fileID: 2800000, guid: e4f7a3023a28c7540820203ab344613f, type: 3}
+  - coffeeIcon: {fileID: 2800000, guid: 56b7841897f89bf49818cf43c68003fa, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Scripts/Editor/MTR_Inspector.cs
+  uploadId: 653610

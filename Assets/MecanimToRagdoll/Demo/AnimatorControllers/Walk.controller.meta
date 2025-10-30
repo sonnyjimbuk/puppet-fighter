@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1a5d4314a63980c4e800c0acee6d7641
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/AnimatorControllers/Walk.controller
+  uploadId: 653610

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 13200b843b4b5b840a50759327204b7a
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Prefabs/Customized Muscle Limits/Robot
+    Kyle Default Colliders by MTR.prefab
+  uploadId: 653610

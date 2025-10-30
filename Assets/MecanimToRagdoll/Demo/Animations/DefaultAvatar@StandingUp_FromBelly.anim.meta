@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a8f2f7fb4a49c274fa0e66f7bf44d6d2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Animations/DefaultAvatar@StandingUp_FromBelly.anim
+  uploadId: 653610

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 12a44cd4827c4cd4fa30895566a8e67c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Scenes/AddonSettings.lighting
+  uploadId: 653610

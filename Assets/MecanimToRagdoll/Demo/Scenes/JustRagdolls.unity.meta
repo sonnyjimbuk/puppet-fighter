@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ac6d2e05aa9e9fd418d180fefdacd361
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Scenes/JustRagdolls.unity
+  uploadId: 653610

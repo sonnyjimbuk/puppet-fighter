@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8565db477e309c44385e8b5006135b1b
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/Scenes/Idle.unity
+  uploadId: 653610

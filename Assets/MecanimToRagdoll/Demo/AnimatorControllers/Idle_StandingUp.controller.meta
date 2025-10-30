@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: de2ae4c64cb32564eaf3a3215060aac1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Demo/AnimatorControllers/Idle_StandingUp.controller
+  uploadId: 653610

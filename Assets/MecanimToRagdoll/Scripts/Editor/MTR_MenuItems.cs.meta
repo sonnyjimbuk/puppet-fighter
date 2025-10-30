@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 643a57cae3636f04eaf41be7749fb3bb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 158348
+  packageName: Mecanim to ragdoll
+  packageVersion: 2.0.1
+  assetPath: Assets/MecanimToRagdoll/Scripts/Editor/MTR_MenuItems.cs
+  uploadId: 653610
