@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class MarionetteControl : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class MarionetteControl : MonoBehaviour
     
     public float xForceMultiplier;
     public float yForceMultiplier;
+
+    public float maxRotation;
 
     public float yMaxRotationMultiplier;
     public float xMaxRotationMultiplier;
@@ -54,13 +57,23 @@ public class MarionetteControl : MonoBehaviour
 
     Vector2 movementInput;
 
+    // joycon input section/
+    private List<Joycon> joycons;
 
+    // joycon input values
+    Joycon j;
+    public float[] stick;
+    public Vector3 gyro;
+    public Vector3 accel;
+    public int jc_ind;
+    public Quaternion orientation;
+
+    int frameeCounter = 0;
 
     void Awake()
     {
 
     }
-
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -76,10 +89,22 @@ public class MarionetteControl : MonoBehaviour
         crossbarLeftLegJoint = transform.Find("crossbar/Joints/center/leg_L").gameObject;
         crossbarRightLegJoint = transform.Find("crossbar/Joints/center/leg_R").gameObject;
 
+        
+        centerRigidbody = modelCenterJoint.GetComponent<Rigidbody>();
+        leftArmRigidbody = modelLeftArmJoint.GetComponent<Rigidbody>();
+        rightArmRigidbody = modelRightArmJoint.GetComponent<Rigidbody>();
+        leftLegRigidbody = modelLeftLegJoint.GetComponent<Rigidbody>();
+        rightLegRigidbody = modelRightLegJoint.GetComponent<Rigidbody>();
+        
+
         xPos = startingPosition.x;
         yPos = startingPosition.y;
 
-
+        joycons = JoyconManager.Instance.j;
+        if (joycons.Count < jc_ind + 1)
+        {
+            Debug.Log("Not enough Joy-Cons connected for the specified index!");
+        }
     }
 
     void OnMove(InputValue value)
@@ -90,14 +115,45 @@ public class MarionetteControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (centerRigidbody == null)
+        frameeCounter++;
+
+        if (joycons.Count > 0)
         {
-            centerRigidbody = modelCenterJoint.GetComponent<Rigidbody>();
-            leftArmRigidbody = modelLeftArmJoint.GetComponent<Rigidbody>();
-            rightArmRigidbody = modelRightArmJoint.GetComponent<Rigidbody>();
-            leftLegRigidbody = modelLeftLegJoint.GetComponent<Rigidbody>();
-            rightLegRigidbody = modelRightLegJoint.GetComponent<Rigidbody>();
+            j = joycons[jc_ind];
+            stick = j.GetStick();
+            gyro = j.GetGyro();
+            accel = j.GetAccel();
+            orientation = j.GetVector();
+
+            if (frameeCounter % 2 == 0)
+            {
+                /*Debug.Log(string.Format("Joycon Stick x: {0:N} Stick y: {1:N}", stick[0], stick[1]));
+                Debug.Log(string.Format("Joycon Gyro x: {0:N} Gyro y: {1:N} Gyro z: {2:N}", gyro.x, gyro.y, gyro.z));
+                Debug.Log(string.Format("Joycon Accel x: {0:N} Accel y: {1:N} Accel z: {2:N}", accel.x, accel.y, accel.z));*/
+                Debug.Log(string.Format("Joycon Orientation x: {0:N} Orientation y: {1:N} Orientation z: {2:N} Orientation w: {3:N}", orientation.x, orientation.y, orientation.z, orientation.w));
+              
+            }
         }
+
+        if (j.GetButtonDown(Joycon.Button.STICK))
+        {
+            Debug.Log("Shoulder button 2 pressed");
+            // GetStick returns a 2-element vector with x/y joystick components
+            Debug.Log(string.Format("Stick x: {0:N} Stick y: {1:N}", j.GetStick()[0], j.GetStick()[1]));
+
+            // Joycon has no magnetometer, so it cannot accurately determine its yaw value. Joycon.Recenter allows the user to reset the yaw value.
+            j.Recenter();
+        }
+
+        if (j.GetButtonDown(Joycon.Button.SL))
+        {
+            Debug.Log("Shoulder button 1 pressed - Rumble activated");
+            // Rumble for 200 milliseconds, with low frequency rumble at 160 Hz and high frequency rumble at 320 Hz. For more information check:
+            //)
+
+            j.SetRumble(160, 320, 0.6f, 200);
+
+        } 
 
         if (puppetName != tempPuppetName)
         {
@@ -105,19 +161,44 @@ public class MarionetteControl : MonoBehaviour
         }
         tempPuppetName = puppetName;
 
+
+        yForce = 0;
+        xForce = 0;
+
+        /*
         yForce = movementInput.y * xForceMultiplier;
         xForce = -1 * movementInput.x * yForceMultiplier;
+        */
+
 
         yPos += yForce * Time.deltaTime;
         xPos += xForce * Time.deltaTime;
 
-        float targetYRot = yForce * yMaxRotationMultiplier;
-        float targetXRot = xForce * xMaxRotationMultiplier;
+        float w = orientation.w;
+        float x = orientation.x;
+        float y = orientation.y;
+        float z = orientation.z;            
 
-        Vector3 targetRotation = new Vector3(-15 - targetYRot, 0, -1 * targetXRot);
+        float roll = Mathf.Atan2(2 * y * w - 2 * x * z, 1 - 2 * y * y - 2 * z * z) * Mathf.Rad2Deg;
+        float pitch = Mathf.Atan2(2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z) * Mathf.Rad2Deg;
+        float yaw = Mathf.Asin(2 * x * y + 2 * z * w) * Mathf.Rad2Deg;
+
 
         crossbarCenterJoint.transform.localPosition = new Vector3(xPos, yPos, 0);
-        crossbarCenterJoint.transform.localRotation = Quaternion.RotateTowards(crossbarCenterJoint.transform.localRotation, Quaternion.Euler(targetRotation), rotationSpeed *  Time.deltaTime);
+
+
+        //Debug.Log("roll: " + roll + " pitch: " + pitch + " yaw: " + yaw);
+
+        //crossbarCenterJoint.transform.eulerAngles = new Vector3(20, 0, Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90));
+
+        float adjustedRoll = Mathf.Clamp(Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw), -maxRotation, maxRotation);
+
+        crossbarCenterJoint.transform.eulerAngles = new Vector3(20, 0, adjustedRoll);
+
+        //crossbarCenterJoint.transform.eulerAngles = new Vector3(20, 0, Mathf.Cos(roll * Mathf.Deg2Rad)  * (pitch) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw-90));
+        //crossbarCenterJoint.transform.eulerAngles = new Vector3 (20, 0, Mathf.Sin(roll) * (yaw + 90) - Mathf.Cos(roll) * (pitch) );
+
+        //pitch doesn't go smoothly around its maximum? also needs to be inverted
 
         //apply tension forces to each joint
         centerRigidbody.AddForce(CalculateTension(crossbarCenterJoint.transform.position, modelCenterJoint.transform.position, headStringLength, tensionMultiplier * 2));
