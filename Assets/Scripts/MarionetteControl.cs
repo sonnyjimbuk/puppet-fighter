@@ -11,31 +11,39 @@ public class MarionetteControl : MonoBehaviour
     Transform modelTransform;
     private Animator animator;
 
-    float xPos;
-    float yPos;
+    public float xPos;
+    public float yPos;
 
-    float xRot;
-    float yRot;
+    public bool jumping;
+    public Vector2 currentJumpVector;
 
-    float xForce;
-    float yForce;
-    
-    public float xForceMultiplier;
-    public float yForceMultiplier;
+    public float xSpeed;
+    public float ySpeed;
+
+    float timeSinceJumpStart;
+
+    public float jumpStrengthMultiplier;
+    public float maxJumpStrength;
+    public float jumpDecayRate;
+
+    public float whileJumpingCrossbarGravityRate;
+    public float crossbarGravityRate;
 
     public float maxRotation;
 
-    public float yMaxRotationMultiplier;
-    public float xMaxRotationMultiplier;
-
-    public float rotationSpeed;
+    public float rotationToXSpeedMultiplier;
 
     public Vector3 startingPosition;
+
+    public float xBoundary;
+    public float yBoundary;
 
     public float headStringLength;
     public float armsStringLength;
     public float legsStringLength;
     public float tensionMultiplier;
+
+    Transform crossbarTransform;
 
     GameObject crossbarCenterJoint;
     GameObject crossbarLeftArmJoint; 
@@ -49,11 +57,15 @@ public class MarionetteControl : MonoBehaviour
     GameObject modelLeftLegJoint;
     GameObject modelRightLegJoint;
 
-    Rigidbody centerRigidbody;
+    GameObject modelHipJoint;
+
+    Rigidbody headRigidbody;
     Rigidbody leftArmRigidbody;
     Rigidbody rightArmRigidbody;
     Rigidbody leftLegRigidbody;
     Rigidbody rightLegRigidbody;
+
+    Rigidbody hipsRigidbody;
 
     Vector2 movementInput;
 
@@ -68,7 +80,9 @@ public class MarionetteControl : MonoBehaviour
     public int jc_ind;
     public Quaternion orientation;
 
-    int frameeCounter = 0;
+    public Vector3 gravityDirectionTest;
+
+    int frameCounter = 0;
 
     void Awake()
     {
@@ -79,6 +93,10 @@ public class MarionetteControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        xPos = startingPosition.x;
+        yPos = startingPosition.y;
+
+        crossbarTransform = transform.Find("crossbar");
         modelTransform = transform.Find("Model");
         SwapModel();
         tempPuppetName = puppetName;
@@ -87,18 +105,9 @@ public class MarionetteControl : MonoBehaviour
         crossbarLeftArmJoint = transform.Find("crossbar/Joints/center/arm_L").gameObject;
         crossbarRightArmJoint = transform.Find("crossbar/Joints/center/arm_R").gameObject;
         crossbarLeftLegJoint = transform.Find("crossbar/Joints/center/leg_L").gameObject;
-        crossbarRightLegJoint = transform.Find("crossbar/Joints/center/leg_R").gameObject;
+        crossbarRightLegJoint = transform.Find("crossbar/Joints/center/leg_R").gameObject;        
 
-        
-        centerRigidbody = modelCenterJoint.GetComponent<Rigidbody>();
-        leftArmRigidbody = modelLeftArmJoint.GetComponent<Rigidbody>();
-        rightArmRigidbody = modelRightArmJoint.GetComponent<Rigidbody>();
-        leftLegRigidbody = modelLeftLegJoint.GetComponent<Rigidbody>();
-        rightLegRigidbody = modelRightLegJoint.GetComponent<Rigidbody>();
-        
-
-        xPos = startingPosition.x;
-        yPos = startingPosition.y;
+        jumping = false;
 
         joycons = JoyconManager.Instance.j;
         if (joycons.Count < jc_ind + 1)
@@ -107,15 +116,11 @@ public class MarionetteControl : MonoBehaviour
         }
     }
 
-    void OnMove(InputValue value)
-    {
-        movementInput = value.Get<Vector2>();
-    }
 
     // Update is called once per frame
     void Update()
     {
-        frameeCounter++;
+        frameCounter++;
 
         if (joycons.Count > 0)
         {
@@ -125,12 +130,12 @@ public class MarionetteControl : MonoBehaviour
             accel = j.GetAccel();
             orientation = j.GetVector();
 
-            if (frameeCounter % 2 == 0)
+            if (frameCounter % 2 == 0)
             {
-                /*Debug.Log(string.Format("Joycon Stick x: {0:N} Stick y: {1:N}", stick[0], stick[1]));
-                Debug.Log(string.Format("Joycon Gyro x: {0:N} Gyro y: {1:N} Gyro z: {2:N}", gyro.x, gyro.y, gyro.z));
-                Debug.Log(string.Format("Joycon Accel x: {0:N} Accel y: {1:N} Accel z: {2:N}", accel.x, accel.y, accel.z));*/
-                Debug.Log(string.Format("Joycon Orientation x: {0:N} Orientation y: {1:N} Orientation z: {2:N} Orientation w: {3:N}", orientation.x, orientation.y, orientation.z, orientation.w));
+                //Debug.Log(string.Format("Joycon Stick x: {0:N} Stick y: {1:N}", stick[0], stick[1]));
+                //Debug.Log(string.Format("Joycon Gyro x: {0:N} Gyro y: {1:N} Gyro z: {2:N}", gyro.x, gyro.y, gyro.z));
+                //Debug.Log(string.Format("Joycon Accel x: {0:N} Accel y: {1:N} Accel z: {2:N}", accel.x, accel.y, accel.z));
+                //Debug.Log(string.Format("Joycon Orientation x: {0:N} Orientation y: {1:N} Orientation z: {2:N} Orientation w: {3:N}", orientation.x, orientation.y, orientation.z, orientation.w));
               
             }
         }
@@ -151,7 +156,7 @@ public class MarionetteControl : MonoBehaviour
             // Rumble for 200 milliseconds, with low frequency rumble at 160 Hz and high frequency rumble at 320 Hz. For more information check:
             //)
 
-            j.SetRumble(160, 320, 0.6f, 200);
+            j.SetRumble(160, 320, 0.2f, 200);
 
         } 
 
@@ -160,19 +165,6 @@ public class MarionetteControl : MonoBehaviour
             SwapModel();
         }
         tempPuppetName = puppetName;
-
-
-        yForce = 0;
-        xForce = 0;
-
-        /*
-        yForce = movementInput.y * xForceMultiplier;
-        xForce = -1 * movementInput.x * yForceMultiplier;
-        */
-
-
-        yPos += yForce * Time.deltaTime;
-        xPos += xForce * Time.deltaTime;
 
         float w = orientation.w;
         float x = orientation.x;
@@ -183,25 +175,140 @@ public class MarionetteControl : MonoBehaviour
         float pitch = Mathf.Atan2(2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z) * Mathf.Rad2Deg;
         float yaw = Mathf.Asin(2 * x * y + 2 * z * w) * Mathf.Rad2Deg;
 
+        float adjustedRoll = Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw);
 
-        crossbarCenterJoint.transform.localPosition = new Vector3(xPos, yPos, 0);
+        float crossbarRotation = Mathf.Clamp(adjustedRoll, -maxRotation, maxRotation);
+
+        crossbarTransform.eulerAngles = new Vector3(20, 0, crossbarRotation);
+
+       
+        Vector2 jumpAccel = CalculateJumpAccel(accel, orientation);
+        float totalJumpAccel = jumpAccel.magnitude;
+        
+        // check to see if accel is strong enough to initiate a jump
+        if (jumping == false && Mathf.Abs(yPos - startingPosition.y) < 0.5)
+        {
+            if (totalJumpAccel > 1.2)
+            { 
+                timeSinceJumpStart = 0;
+                jumping = true;
+                currentJumpVector = jumpAccel;
+                //Debug.Log("Jump initiated with accel magnitude: " + totalJumpAccel);
+                xSpeed = currentJumpVector.x * jumpStrengthMultiplier;
+                ySpeed = currentJumpVector.y * jumpStrengthMultiplier;
+            }
+        }
+
+        if (jumping == true)
+        {
+            timeSinceJumpStart += Time.deltaTime;
+            float jumpAccelDotProduct = Vector2.Dot(jumpAccel.normalized, currentJumpVector.normalized) * jumpAccel.magnitude;
+            if (jumpAccelDotProduct > currentJumpVector.magnitude)
+            {
+                xSpeed += jumpAccel.x - currentJumpVector.x;
+                ySpeed += jumpAccel.y - currentJumpVector.y;
+                currentJumpVector = jumpAccel;
+                //Debug.Log("Jump redirected with new accel magnitude: " + totalJumpAccel);
+            }
+        }
+        
+        // clamp overall speed
+        Vector2 totalSpeed = new Vector2(xSpeed, ySpeed);
+        float speedMagnitude = totalSpeed.magnitude;
+        speedMagnitude = Mathf.Clamp(speedMagnitude, 0, maxJumpStrength);
+
+        if (totalSpeed.magnitude > 0)
+        {
+            xSpeed = (speedMagnitude / totalSpeed.magnitude) * xSpeed;
+            ySpeed = (speedMagnitude / totalSpeed.magnitude) * ySpeed;
+        }
+
+        // decay rate applied to x speed only
+        xSpeed = Mathf.MoveTowards(xSpeed, 0, jumpDecayRate * Time.deltaTime);
 
 
-        //Debug.Log("roll: " + roll + " pitch: " + pitch + " yaw: " + yaw);
+        // bump into floor and ceiling
+        if (yPos < 0)
+        {
+            yPos = 0;
+            ySpeed = 0;
+        }
 
-        //crossbarCenterJoint.transform.eulerAngles = new Vector3(20, 0, Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90));
+        if (yPos > yBoundary)
+        {
+            yPos = yBoundary;
+            ySpeed = 0;
+        }
 
-        float adjustedRoll = Mathf.Clamp(Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw), -maxRotation, maxRotation);
+        // bump into left and right walls
+        if (xPos < -xBoundary)
+        {
+            xPos = -xBoundary;
+            xSpeed = -0.5f * xSpeed;
+        }
 
-        crossbarCenterJoint.transform.eulerAngles = new Vector3(20, 0, adjustedRoll);
+        if (xPos > xBoundary)
+        {
+            xPos = xBoundary;
+            xSpeed = -0.5f * xSpeed;
+        }
 
-        //crossbarCenterJoint.transform.eulerAngles = new Vector3(20, 0, Mathf.Cos(roll * Mathf.Deg2Rad)  * (pitch) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw-90));
-        //crossbarCenterJoint.transform.eulerAngles = new Vector3 (20, 0, Mathf.Sin(roll) * (yaw + 90) - Mathf.Cos(roll) * (pitch) );
 
-        //pitch doesn't go smoothly around its maximum? also needs to be inverted
+        if (timeSinceJumpStart > 0.2)
+        {
+            jumping = false;
+            //Debug.Log("Initial jump ended");
+        }
+
+        if (jumping)
+        {
+            ySpeed -= Mathf.Sign(yPos - startingPosition.y) * whileJumpingCrossbarGravityRate * Time.deltaTime;
+        }
+        else
+        {
+            ySpeed -= Mathf.Sign(yPos - startingPosition.y) * crossbarGravityRate * Time.deltaTime;
+        }
+
+        if (yPos < startingPosition.y)
+        {
+            yPos += ySpeed * Time.deltaTime;
+            yPos = Mathf.Min(yPos, startingPosition.y);
+        }
+
+        else if (yPos > startingPosition.y)
+        {
+            yPos += ySpeed * Time.deltaTime;
+            yPos = Mathf.Max(yPos, startingPosition.y);
+        }
+
+        if (yPos == startingPosition.y)
+        {
+            //if the jump is over and we are back at starting position, return yPos to its resting position and kill the ySpeed
+            if (jumping == false)
+            {
+                yPos = startingPosition.y;
+                ySpeed = 0;
+            }
+            //if the jump just started and we are at starting position, apply ySpeed normally
+            else
+            {
+                yPos += ySpeed * Time.deltaTime;
+            }
+        }
+
+        if (jumping == false && yPos == startingPosition.y)
+        {
+            ySpeed = 0;
+        }
+
+        xPos += xSpeed * Time.deltaTime;
+
+        xPos -= rotationToXSpeedMultiplier * (crossbarRotation / maxRotation) * Time.deltaTime;
+        crossbarTransform.localPosition = new Vector3(xPos, yPos, 0);
 
         //apply tension forces to each joint
-        centerRigidbody.AddForce(CalculateTension(crossbarCenterJoint.transform.position, modelCenterJoint.transform.position, headStringLength, tensionMultiplier * 2));
+
+        headRigidbody.AddForce(CalculateTension(crossbarCenterJoint.transform.position, modelCenterJoint.transform.position, headStringLength, tensionMultiplier * 2));
         leftArmRigidbody.AddForce(CalculateTension(crossbarLeftArmJoint.transform.position, modelLeftArmJoint.transform.position, armsStringLength, tensionMultiplier));
         rightArmRigidbody.AddForce(CalculateTension(crossbarRightArmJoint.transform.position, modelRightArmJoint.transform.position, armsStringLength, tensionMultiplier));
         leftLegRigidbody.AddForce(CalculateTension(crossbarLeftLegJoint.transform.position, modelLeftLegJoint.transform.position, legsStringLength, tensionMultiplier));
@@ -217,6 +324,8 @@ public class MarionetteControl : MonoBehaviour
             Debug.Log("Puppet model " + puppetName + " not found in Resources/PuppetModels/");
             return;
         }
+
+        modelTransform.localPosition = new Vector3(xPos, yPos - 2, 0);
 
         GameObject newModelInstantiated = Instantiate(newModel, modelTransform);
         animator = newModelInstantiated.GetComponent<Animator>();
@@ -241,6 +350,14 @@ public class MarionetteControl : MonoBehaviour
         modelRightArmJoint = animator.GetBoneTransform(HumanBodyBones.RightHand).gameObject;
         modelLeftLegJoint = animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg).gameObject;
         modelRightLegJoint = animator.GetBoneTransform(HumanBodyBones.RightLowerLeg).gameObject;
+        modelHipJoint = animator.GetBoneTransform(HumanBodyBones.Hips).gameObject;
+
+        headRigidbody = modelCenterJoint.GetComponent<Rigidbody>();
+        leftArmRigidbody = modelLeftArmJoint.GetComponent<Rigidbody>();
+        rightArmRigidbody = modelRightArmJoint.GetComponent<Rigidbody>();
+        leftLegRigidbody = modelLeftLegJoint.GetComponent<Rigidbody>();
+        rightLegRigidbody = modelRightLegJoint.GetComponent<Rigidbody>();
+        hipsRigidbody = modelHipJoint.GetComponent<Rigidbody>();
 
     }
 
@@ -251,11 +368,49 @@ public class MarionetteControl : MonoBehaviour
 
         float currentLength = modelToCrossbar.magnitude;
         float stretchLength = currentLength - baseLength;
-        stretchLength = Mathf.Clamp(stretchLength, 0, 100);
+
+        // with the clamp disabled, strings can also push if they are compressed: they act like stiff springs
+
+        //stretchLength = Mathf.Clamp(stretchLength, 0, 100);
 
         return modelToCrossbar.normalized * stretchLength * tensionMultiplier;
 
     }
+
+    Vector2 CalculateJumpAccel(Vector3 accelData, Quaternion orientation)
+    {
+        float accelX = accelData.x;
+        float accelY = accelData.y;
+        float accelZ = accelData.z; // correct for base -1 z accel that occurs for some reason even when still
+
+        Quaternion orientationConjugate = new Quaternion(-orientation.x, -orientation.y, -orientation.z, orientation.w);
+
+        Quaternion gravityCorrectionQuaternion = new Quaternion(gravityDirectionTest.x, gravityDirectionTest.y, gravityDirectionTest.z, 0);
+
+        gravityCorrectionQuaternion = orientationConjugate * gravityCorrectionQuaternion * orientation;
+
+        Quaternion accelQuaternion = new Quaternion (accelX + gravityCorrectionQuaternion.z, accelY + gravityCorrectionQuaternion.x, accelZ - gravityCorrectionQuaternion.y, 0);
+
+        //Debug.Log("Gravity corrected accel data: " + accelQuaternion.ToString("F4"));
+
+        Quaternion accelCorrectedQuaternion = orientationConjugate * accelQuaternion * orientation;
+
+        Vector3 accelCorrected = new Vector3(accelCorrectedQuaternion.x, accelCorrectedQuaternion.y, accelCorrectedQuaternion.z);
+
+        float accelXCorrected = Vector3.Dot(accelCorrected, new Vector3(1f, 0f, 0f));
+        float accelYCorrected = Vector3.Dot(accelCorrected, new Vector3(0f, 1f, 0f));
+
+        Vector2 returnVector = new Vector2(-accelXCorrected, accelYCorrected);
+
+        if (returnVector.magnitude > 1.2)
+        {
+            Debug.Log("Corrected Accel X: " + accelXCorrected.ToString("F4") + " Corrected Accel Y: " + accelYCorrected.ToString("F4"));
+        }
+
+        return returnVector;
+    }
+
+   
 
 }
 
