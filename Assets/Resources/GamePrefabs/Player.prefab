@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2032b21f040e0be49959776225ee167a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puppetName: lady marmalade
+  puppetName: April
   xPos: 0
   yPos: 0
   jumping: 0
@@ -137,8 +137,8 @@ MonoBehaviour:
   crossbarGravityRate: 10
   maxRotation: 60
   rotationToXSpeedMultiplier: 5
-  startingPosition: {x: 0, y: 2.4, z: 0}
-  xBoundary: 5
+  startingPosition: {x: 1, y: 2.4, z: 0}
+  xBoundary: 4
   yBoundary: 6
   headStringLength: 0.5
   armsStringLength: 1

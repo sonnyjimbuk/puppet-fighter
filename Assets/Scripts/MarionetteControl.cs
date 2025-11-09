@@ -140,14 +140,16 @@ public class MarionetteControl : MonoBehaviour
             }
         }
 
-        if (j.GetButtonDown(Joycon.Button.STICK))
+        if (j.GetButtonDown(Joycon.Button.SR))
         {
             Debug.Log("Shoulder button 2 pressed");
             // GetStick returns a 2-element vector with x/y joystick components
-            Debug.Log(string.Format("Stick x: {0:N} Stick y: {1:N}", j.GetStick()[0], j.GetStick()[1]));
+            //Debug.Log(string.Format("Stick x: {0:N} Stick y: {1:N}", j.GetStick()[0], j.GetStick()[1]));
+
+            CalculateJumpAccel(accel, orientation, true, j);
 
             // Joycon has no magnetometer, so it cannot accurately determine its yaw value. Joycon.Recenter allows the user to reset the yaw value.
-            j.Recenter();
+            //j.Recenter();
         }
 
         if (j.GetButtonDown(Joycon.Button.SL))
@@ -177,12 +179,17 @@ public class MarionetteControl : MonoBehaviour
 
         float adjustedRoll = Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw);
 
+        if (j.isLeft)
+        {
+            adjustedRoll = -adjustedRoll;
+        }
+
         float crossbarRotation = Mathf.Clamp(adjustedRoll, -maxRotation, maxRotation);
 
         crossbarTransform.eulerAngles = new Vector3(20, 0, crossbarRotation);
 
        
-        Vector2 jumpAccel = CalculateJumpAccel(accel, orientation);
+        Vector2 jumpAccel = CalculateJumpAccel(accel, orientation, false, j);
         float totalJumpAccel = jumpAccel.magnitude;
         
         // check to see if accel is strong enough to initiate a jump
@@ -377,7 +384,7 @@ public class MarionetteControl : MonoBehaviour
 
     }
 
-    Vector2 CalculateJumpAccel(Vector3 accelData, Quaternion orientation)
+    Vector2 CalculateJumpAccel(Vector3 accelData, Quaternion orientation, bool printResults, Joycon j)
     {
         float accelX = accelData.x;
         float accelY = accelData.y;
@@ -391,8 +398,6 @@ public class MarionetteControl : MonoBehaviour
 
         Quaternion accelQuaternion = new Quaternion (accelX + gravityCorrectionQuaternion.z, accelY + gravityCorrectionQuaternion.x, accelZ - gravityCorrectionQuaternion.y, 0);
 
-        //Debug.Log("Gravity corrected accel data: " + accelQuaternion.ToString("F4"));
-
         Quaternion accelCorrectedQuaternion = orientationConjugate * accelQuaternion * orientation;
 
         Vector3 accelCorrected = new Vector3(accelCorrectedQuaternion.x, accelCorrectedQuaternion.y, accelCorrectedQuaternion.z);
@@ -400,10 +405,22 @@ public class MarionetteControl : MonoBehaviour
         float accelXCorrected = Vector3.Dot(accelCorrected, new Vector3(1f, 0f, 0f));
         float accelYCorrected = Vector3.Dot(accelCorrected, new Vector3(0f, 1f, 0f));
 
+        if (j.isLeft)
+        {
+            //invert x accel for left joycon to match right joycon orientation
+            accelXCorrected = -accelXCorrected;
+        }
+
         Vector2 returnVector = new Vector2(-accelXCorrected, accelYCorrected);
 
-        if (returnVector.magnitude > 1.2)
+        if (printResults)
         {
+            Debug.Log("Raw accel data: " + accelData.ToString("F4"));
+
+            Debug.Log("Gravity correction quat: " + gravityCorrectionQuaternion.ToString("F4"));
+
+            Debug.Log("Gravity corrected accel data: " + accelQuaternion.ToString("F4"));
+
             Debug.Log("Corrected Accel X: " + accelXCorrected.ToString("F4") + " Corrected Accel Y: " + accelYCorrected.ToString("F4"));
         }
 
