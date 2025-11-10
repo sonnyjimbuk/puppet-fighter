@@ -342,6 +342,11 @@ public class MarionetteControl : MonoBehaviour
     {
         if (joycons.Count > 0)
         {
+            if (jc_ind >= joycons.Count)
+            {
+                Debug.Log("Joycon index out of range!");
+                return false;
+            }
             j = joycons[jc_ind];
             if (j == null)
             {
