@@ -833,7 +833,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 728298254}
+    - targetCorrespondingSourceObject: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 728298255}
   m_SourcePrefab: {fileID: 100100000, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
 --- !u!1001 &253563388
 PrefabInstance:
@@ -890,7 +896,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 699949714}
+    - targetCorrespondingSourceObject: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 699949715}
   m_SourcePrefab: {fileID: 100100000, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
 --- !u!1 &265757111
 GameObject:
@@ -2110,6 +2122,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 616077507}
   m_CullTransparentMesh: 1
+--- !u!1 &699949709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+  m_PrefabInstance: {fileID: 253563388}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &699949714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699949709}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74bbf64dc558158449ab750ea887a67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useLeftJoycon: 1
+  triggerButton: 12
+  useTorque: 0
+  swingForce: 40
+  torquePower: 20
+  cooldown: 0.6
+  canSwing: 1
+  upperArm: {fileID: 0}
+  foreArm: {fileID: 0}
+  hand: {fileID: 0}
+  chain: []
+--- !u!114 &699949715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699949709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb00150216b7b6b4da1bab50a15bf960, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useLeftJoycon: 1
+  leftTrigger: 12
+  rightTrigger: 11
+  swingDuration: 0.6
+  cooldown: 0.6
+  useTorque: 0
+  swingForce: 150
+  torquePower: 25
+  sideOffset: 0.3
+  upOffset: 1
+  downOffset: -1
+  forwardFactor: 0.6
 --- !u!1 &700997380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,6 +2389,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &728298249 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+  m_PrefabInstance: {fileID: 240148648}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &728298254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728298249}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74bbf64dc558158449ab750ea887a67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useLeftJoycon: 0
+  triggerButton: 12
+  useTorque: 0
+  swingForce: 40
+  torquePower: 20
+  cooldown: 0.6
+  canSwing: 1
+  upperArm: {fileID: 0}
+  foreArm: {fileID: 0}
+  hand: {fileID: 0}
+  chain: []
+--- !u!114 &728298255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728298249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb00150216b7b6b4da1bab50a15bf960, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useLeftJoycon: 0
+  leftTrigger: 12
+  rightTrigger: 11
+  swingDuration: 0.6
+  cooldown: 0.6
+  useTorque: 0
+  swingForce: 150
+  torquePower: 25
+  sideOffset: 0.3
+  upOffset: 1
+  downOffset: -1
+  forwardFactor: 0.6
 --- !u!1 &730663577
 GameObject:
   m_ObjectHideFlags: 0
