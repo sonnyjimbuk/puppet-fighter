@@ -6,8 +6,7 @@ public class PickableItem : MonoBehaviour
     [Header("Audio Clips")]
     public AudioClip pickUpSound;   // Sound when picked up
     public AudioClip dropSound;     // Sound when dropped
-
-    [HideInInspector] public GameObject currentHolder; // Track who is holding this item
+    public GameObject currentHolder; // Track who is holding this item
 
     private AudioSource audioSource;
 

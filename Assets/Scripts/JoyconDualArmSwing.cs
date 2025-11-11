@@ -16,10 +16,13 @@ public class JoyconDualArmSwing : MonoBehaviour
     [Range(0f, 200f)] public float torquePower = 50f;
 
     [Header("Direction Fine-Tuning")]
-    [Range(-1f, 1f)] public float sideOffset = 0.3f;    // outward
-    [Range(-1f, 1f)] public float upOffset = 1.0f;      // how high it lifts
-    [Range(-1f, 1f)] public float downOffset = -1.0f;   // how hard it swings down
-    [Range(0f, 1f)] public float forwardFactor = 0.6f;  // forward blend
+    [Range(-1f, 1f)] public float sideOffset = 0.3f;
+    [Range(-1f, 1f)] public float upOffset = 1.0f;
+    [Range(-1f, 1f)] public float downOffset = -1.0f;
+    [Range(0f, 1f)] public float forwardFactor = 0.6f;
+
+    [Header("Attack System")]
+    public WeaponDamage weaponDamage;  // ✅ 连接武器的攻击检测脚本
 
     private Joycon joycon;
     private bool canLeft = true, canRight = true;
@@ -66,6 +69,10 @@ public class JoyconDualArmSwing : MonoBehaviour
             new Rigidbody[] { lFore, lHand } :
             new Rigidbody[] { rFore, rHand };
 
+        // ✅ 攻击检测开始
+        if (weaponDamage != null)
+            weaponDamage.StartAttack();
+
         float t = 0f;
         while (t < swingDuration)
         {
@@ -84,25 +91,23 @@ public class JoyconDualArmSwing : MonoBehaviour
             yield return null;
         }
 
+        // ✅ 攻击检测结束
+        if (weaponDamage != null)
+            weaponDamage.EndAttack();
+
         yield return new WaitForSeconds(cooldown);
         if (isLeft) canLeft = true; else canRight = true;
     }
 
     Vector3 GetLiftAndDownDir(bool isLeft, float progress)
     {
-        // at start (0): move upward
-        // at end (1): swing forward-downward
         Vector3 startDir = transform.up * upOffset;
         Vector3 endDir =
             (transform.forward * forwardFactor) +
             (transform.up * downOffset) +
             ((isLeft ? -transform.right : transform.right) * sideOffset);
 
-        // smooth interpolate from up to forward-down
         Vector3 dir = Vector3.Slerp(startDir, endDir, progress);
         return dir.normalized;
     }
 }
-
-
-
