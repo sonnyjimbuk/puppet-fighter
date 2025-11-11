@@ -25,7 +25,7 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
 
     [Header("Joycon Settings")]
     public bool useJoycon = true;
-    public bool isPlayer1 = true; // ✅ 用于区分哪个Joycon对应谁
+    public bool isPlayer1 = true;
     private Joycon leftJoycon;
     private Joycon rightJoycon;
 
@@ -39,7 +39,7 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
         if (marionette == null)
             marionette = GetComponent<MarionetteControl>();
 
-        // Joycon 区分左右玩家
+        // Setup Joycon references
         if (useJoycon && JoyconManager.Instance.j.Count > 0)
         {
             var joycons = JoyconManager.Instance.j;
@@ -52,6 +52,7 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
     {
         cooldownTimer -= Time.deltaTime;
 
+        // Ensure left/right hand references are found
         if ((rightHand == null || leftHand == null) && marionette != null)
         {
             FieldInfo rightField = typeof(MarionetteControl).GetField("modelRightArmJoint", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -66,7 +67,7 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
         if (marionette == null || (rightHand == null && leftHand == null))
             return;
 
-        // 🎮 按键控制（区分P1 / P2）
+        // 🎮 Input handling
         bool pickupLeft = false;
         bool pickupRight = false;
         bool dropPressed = false;
@@ -90,6 +91,7 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
         if (!isPlayer1 && Input.GetKeyDown(KeyCode.X)) pickupRight = true;
         if (Input.GetKeyDown(KeyCode.C)) dropPressed = true;
 
+        // Main pickup/drop logic
         if (!pickedUp && !isFlyingToHand && cooldownTimer <= 0f)
         {
             if (pickupLeft && leftHand != null)
@@ -127,15 +129,17 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
             PickableItem pickable = rb.GetComponent<PickableItem>();
             if (pickable == null) continue;
 
-            // ✅ 已被别人持有则跳过
+            // Skip if already held by another player
             if (pickable.currentHolder != null && pickable.currentHolder != gameObject)
             {
                 Debug.Log($"⚠ {rb.name} is owned by {pickable.currentHolder.name}");
                 continue;
             }
 
-            // ✅ 绑定到当前 Player（不是 clone 模型）
             pickable.currentHolder = gameObject;
+
+            // ✅ Play pickup sound
+            pickable.PlayPickUpSound();
 
             StartCoroutine(FlyToHand(rb, hand));
             Debug.Log($"🟢 {gameObject.name} picked up {rb.name}");
@@ -223,7 +227,10 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
             col.enabled = true;
 
         if (pickable != null)
+        {
             pickable.currentHolder = null;
+            pickable.PlayDropSound(); // ✅ Play drop sound
+        }
 
         heldRigidbody.useGravity = true;
         heldRigidbody.linearVelocity = (holdingRightHand ? rightHand.forward : leftHand.forward) * throwForce;
