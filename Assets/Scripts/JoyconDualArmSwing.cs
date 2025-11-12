@@ -4,7 +4,7 @@ using System.Collections;
 public class JoyconDualArmSwing : MonoBehaviour
 {
     [Header("Joy-Con Settings")]
-    public bool useLeftJoycon = true;
+    public bool useLeftJoycon = true; // ✅ 左 Joy-Con = P1 (J/K)，右 Joy-Con = P2 (1/2)
     public Joycon.Button leftTrigger = Joycon.Button.SHOULDER_2;  // ZL
     public Joycon.Button rightTrigger = Joycon.Button.SHOULDER_1; // ZR
 
@@ -22,14 +22,31 @@ public class JoyconDualArmSwing : MonoBehaviour
     [Range(0f, 1f)] public float forwardFactor = 0.6f;
 
     [Header("Attack System")]
-    public WeaponDamage weaponDamage;  // ✅ 连接武器的攻击检测脚本
+    public WeaponDamage weaponDamage;
 
     private Joycon joycon;
-    private bool canLeft = true, canRight = true;
+    private bool canAttack1 = true;
+    private bool canAttack2 = true;
+    private bool hasWeapon = false;
     private Rigidbody lFore, lHand, rFore, rHand;
+
+    private KeyCode keyAttack1; // ✅ J / 1
+    private KeyCode keyAttack2; // ✅ K / 2
 
     void Start()
     {
+        // 🎯 自动分配键位
+        if (useLeftJoycon)
+        {
+            keyAttack1 = KeyCode.J;
+            keyAttack2 = KeyCode.K;
+        }
+        else
+        {
+            keyAttack1 = KeyCode.Alpha1;
+            keyAttack2 = KeyCode.Alpha2;
+        }
+
         Invoke(nameof(FindJoyconAndBones), 0.5f);
     }
 
@@ -52,36 +69,41 @@ public class JoyconDualArmSwing : MonoBehaviour
 
     void Update()
     {
-        if (joycon == null) return;
+        hasWeapon = weaponDamage != null;
+        if (!hasWeapon) return;
 
-        if (canLeft && joycon.GetButtonDown(leftTrigger))
-            StartCoroutine(SwingArm(true));
+        // 🎮 Joy-Con Attack
+        if (joycon != null)
+        {
+            if (canAttack1 && joycon.GetButtonDown(rightTrigger)) StartCoroutine(SwingArm(useLeftJoycon, true));
+            if (canAttack2 && joycon.GetButtonDown(leftTrigger)) StartCoroutine(SwingArm(useLeftJoycon, false));
+        }
 
-        if (canRight && joycon.GetButtonDown(rightTrigger))
-            StartCoroutine(SwingArm(false));
+        // ⌨ Keyboard Attack (J/K for P1, 1/2 for P2)
+        if (canAttack1 && Input.GetKeyDown(keyAttack1)) StartCoroutine(SwingArm(useLeftJoycon, true));
+        if (canAttack2 && Input.GetKeyDown(keyAttack2)) StartCoroutine(SwingArm(useLeftJoycon, false));
     }
 
-    IEnumerator SwingArm(bool isLeft)
+    IEnumerator SwingArm(bool isLeftJoycon, bool isPrimary)
     {
-        if (isLeft) canLeft = false; else canRight = false;
+        if (isPrimary) canAttack1 = false;
+        else canAttack2 = false;
 
-        Rigidbody[] chain = isLeft ?
+        Rigidbody[] chain = isLeftJoycon ?
             new Rigidbody[] { lFore, lHand } :
             new Rigidbody[] { rFore, rHand };
 
-        // ✅ 攻击检测开始
+        // Start attack
         if (weaponDamage != null)
             weaponDamage.StartAttack();
 
         float t = 0f;
         while (t < swingDuration)
         {
-            Vector3 dir = GetLiftAndDownDir(isLeft, t / swingDuration);
+            Vector3 dir = GetLiftAndDownDir(isLeftJoycon, t / swingDuration);
             foreach (var rb in chain)
             {
                 if (rb == null) continue;
-                Debug.DrawRay(rb.transform.position, dir * 0.3f, Color.magenta, 0.1f);
-
                 if (useTorque)
                     rb.AddTorque(dir * torquePower * Time.deltaTime, ForceMode.Impulse);
                 else
@@ -91,12 +113,12 @@ public class JoyconDualArmSwing : MonoBehaviour
             yield return null;
         }
 
-        // ✅ 攻击检测结束
         if (weaponDamage != null)
             weaponDamage.EndAttack();
 
         yield return new WaitForSeconds(cooldown);
-        if (isLeft) canLeft = true; else canRight = true;
+        if (isPrimary) canAttack1 = true;
+        else canAttack2 = true;
     }
 
     Vector3 GetLiftAndDownDir(bool isLeft, float progress)
