@@ -11,6 +11,8 @@ public class MarionetteControl : MonoBehaviour
     Transform modelTransform;
     private Animator animator;
 
+    float crossbarRotation;
+
     public float xPos;
     public float yPos;
 
@@ -67,10 +69,10 @@ public class MarionetteControl : MonoBehaviour
 
     Rigidbody hipsRigidbody;
 
-    Vector2 movementInput;
-
     // joycon input section/
     private List<Joycon> joycons;
+
+    bool usingJoycons;
 
     // joycon input values
     Joycon j;
@@ -79,6 +81,9 @@ public class MarionetteControl : MonoBehaviour
     public Vector3 accel;
     public int jc_ind;
     public Quaternion orientation;
+
+    // keyboard input section
+    Vector2 keyboardMovementInput;
 
     public Vector3 gravityDirectionTest;
 
@@ -93,6 +98,8 @@ public class MarionetteControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        crossbarRotation = 0;
+
         xPos = startingPosition.x;
         yPos = startingPosition.y;
 
@@ -116,80 +123,43 @@ public class MarionetteControl : MonoBehaviour
         }
     }
 
+    void OnMove(InputValue value)
+    {
+        keyboardMovementInput = value.Get<Vector2>();
+    }
+
 
     // Update is called once per frame
     void Update()
     {
         frameCounter++;
-
-        if (joycons.Count > 0)
-        {
-            j = joycons[jc_ind];
-            stick = j.GetStick();
-            gyro = j.GetGyro();
-            accel = j.GetAccel();
-            orientation = j.GetVector();
-
-            if (frameCounter % 2 == 0)
-            {
-                //Debug.Log(string.Format("Joycon Stick x: {0:N} Stick y: {1:N}", stick[0], stick[1]));
-                //Debug.Log(string.Format("Joycon Gyro x: {0:N} Gyro y: {1:N} Gyro z: {2:N}", gyro.x, gyro.y, gyro.z));
-                //Debug.Log(string.Format("Joycon Accel x: {0:N} Accel y: {1:N} Accel z: {2:N}", accel.x, accel.y, accel.z));
-                //Debug.Log(string.Format("Joycon Orientation x: {0:N} Orientation y: {1:N} Orientation z: {2:N} Orientation w: {3:N}", orientation.x, orientation.y, orientation.z, orientation.w));
-              
-            }
-        }
-
-        if (j.GetButtonDown(Joycon.Button.SR))
-        {
-            Debug.Log("Shoulder button 2 pressed");
-            // GetStick returns a 2-element vector with x/y joystick components
-            //Debug.Log(string.Format("Stick x: {0:N} Stick y: {1:N}", j.GetStick()[0], j.GetStick()[1]));
-
-            CalculateJumpAccel(accel, orientation, true, j);
-
-            // Joycon has no magnetometer, so it cannot accurately determine its yaw value. Joycon.Recenter allows the user to reset the yaw value.
-            //j.Recenter();
-        }
-
-        if (j.GetButtonDown(Joycon.Button.SL))
-        {
-            Debug.Log("Shoulder button 1 pressed - Rumble activated");
-            // Rumble for 200 milliseconds, with low frequency rumble at 160 Hz and high frequency rumble at 320 Hz. For more information check:
-            //)
-
-            j.SetRumble(160, 320, 0.2f, 200);
-
-        } 
-
+        
         if (puppetName != tempPuppetName)
         {
             SwapModel();
         }
         tempPuppetName = puppetName;
 
-        float w = orientation.w;
-        float x = orientation.x;
-        float y = orientation.y;
-        float z = orientation.z;            
+        usingJoycons = PollJoycons();
 
-        float roll = Mathf.Atan2(2 * y * w - 2 * x * z, 1 - 2 * y * y - 2 * z * z) * Mathf.Rad2Deg;
-        float pitch = Mathf.Atan2(2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z) * Mathf.Rad2Deg;
-        float yaw = Mathf.Asin(2 * x * y + 2 * z * w) * Mathf.Rad2Deg;
+        Vector2 jumpAccel = new Vector2(0, 0);
 
-        float adjustedRoll = Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw);
-
-        if (j.isLeft)
+        if (usingJoycons)
         {
-            adjustedRoll = -adjustedRoll;
+            JoyconCheckButtons();
+            crossbarRotation = JoyconRotationCalculation();
+            jumpAccel = JoyconCalculateJumpAccel(accel, orientation, false, j);
         }
 
-        float crossbarRotation = Mathf.Clamp(adjustedRoll, -maxRotation, maxRotation);
+
+        else // keyboard control
+        {
+            crossbarRotation = KeyboardRotationCalculation(crossbarRotation);
+            jumpAccel = KeyboardCalculateJumpAccel();
+        }
 
         crossbarTransform.eulerAngles = new Vector3(20, 0, crossbarRotation);
 
-       
-        Vector2 jumpAccel = CalculateJumpAccel(accel, orientation, false, j);
         float totalJumpAccel = jumpAccel.magnitude;
         
         // check to see if accel is strong enough to initiate a jump
@@ -368,23 +338,81 @@ public class MarionetteControl : MonoBehaviour
 
     }
 
-    Vector3 CalculateTension(Vector3 crossbarJointPosition, Vector3 modelJointPosition, float baseLength, float tensionMultiplier)
+    bool PollJoycons()
     {
-        Vector3 modelToCrossbar = new Vector3();
-        modelToCrossbar = crossbarJointPosition - modelJointPosition;
+        if (joycons.Count > 0)
+        {
+            if (jc_ind >= joycons.Count)
+            {
+                Debug.Log("Joycon index out of range!");
+                return false;
+            }
+            j = joycons[jc_ind];
+            if (j == null)
+            {
+                return false;
+            }
+            stick = j.GetStick();
+            gyro = j.GetGyro();
+            accel = j.GetAccel();
+            orientation = j.GetVector();
 
-        float currentLength = modelToCrossbar.magnitude;
-        float stretchLength = currentLength - baseLength;
+            if (frameCounter % 2 == 0)
+            {
+                //Debug.Log(string.Format("Joycon Stick x: {0:N} Stick y: {1:N}", stick[0], stick[1]));
+                //Debug.Log(string.Format("Joycon Gyro x: {0:N} Gyro y: {1:N} Gyro z: {2:N}", gyro.x, gyro.y, gyro.z));
+                //Debug.Log(string.Format("Joycon Accel x: {0:N} Accel y: {1:N} Accel z: {2:N}", accel.x, accel.y, accel.z));
+                //Debug.Log(string.Format("Joycon Orientation x: {0:N} Orientation y: {1:N} Orientation z: {2:N} Orientation w: {3:N}", orientation.x, orientation.y, orientation.z, orientation.w));
 
-        // with the clamp disabled, strings can also push if they are compressed: they act like stiff springs
+            }
+        }
 
-        //stretchLength = Mathf.Clamp(stretchLength, 0, 100);
+        else
+        {
+            return false;
+        }
 
-        return modelToCrossbar.normalized * stretchLength * tensionMultiplier;
-
+        return true;
     }
 
-    Vector2 CalculateJumpAccel(Vector3 accelData, Quaternion orientation, bool printResults, Joycon j)
+    void JoyconCheckButtons()
+    {
+        if (j.GetButtonDown(Joycon.Button.SR))
+        {
+            Debug.Log("Shoulder button 2 pressed");
+        }
+        if (j.GetButtonDown(Joycon.Button.SL))
+        {
+            Debug.Log("Shoulder button 1 pressed - Rumble activated");
+            // Rumble for 200 milliseconds, with low frequency rumble at 160 Hz and high frequency rumble at 320 Hz. For more information check:
+            //)
+            j.SetRumble(160, 320, 0.2f, 200);
+        }
+    }
+
+    float JoyconRotationCalculation()
+    {
+        float w = orientation.w;
+        float x = orientation.x;
+        float y = orientation.y;
+        float z = orientation.z;
+
+        float roll = Mathf.Atan2(2 * y * w - 2 * x * z, 1 - 2 * y * y - 2 * z * z) * Mathf.Rad2Deg;
+        float pitch = Mathf.Atan2(2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z) * Mathf.Rad2Deg;
+        float yaw = Mathf.Asin(2 * x * y + 2 * z * w) * Mathf.Rad2Deg;
+
+        float adjustedRoll = Mathf.Cos(roll * Mathf.Deg2Rad) * (pitch + 90) + Mathf.Sin(roll * Mathf.Deg2Rad) * (yaw);
+
+        if (j.isLeft)
+        {
+            adjustedRoll = -adjustedRoll;
+        }
+
+        float crossbarRotation = Mathf.Clamp(adjustedRoll, -maxRotation, maxRotation);
+        return crossbarRotation;
+    }
+
+    Vector2 JoyconCalculateJumpAccel(Vector3 accelData, Quaternion orientation, bool printResults, Joycon j)
     {
         float accelX = accelData.x;
         float accelY = accelData.y;
@@ -396,7 +424,7 @@ public class MarionetteControl : MonoBehaviour
 
         gravityCorrectionQuaternion = orientationConjugate * gravityCorrectionQuaternion * orientation;
 
-        Quaternion accelQuaternion = new Quaternion (accelX + gravityCorrectionQuaternion.z, accelY + gravityCorrectionQuaternion.x, accelZ - gravityCorrectionQuaternion.y, 0);
+        Quaternion accelQuaternion = new Quaternion(accelX + gravityCorrectionQuaternion.z, accelY + gravityCorrectionQuaternion.x, accelZ - gravityCorrectionQuaternion.y, 0);
 
         Quaternion accelCorrectedQuaternion = orientationConjugate * accelQuaternion * orientation;
 
@@ -425,6 +453,43 @@ public class MarionetteControl : MonoBehaviour
         }
 
         return returnVector;
+    }
+
+
+    void KeyboardCheckButtons()
+    {
+        // Implement keyboard controls if needed
+    }
+
+    float KeyboardRotationCalculation(float currentRotation)
+    {
+        float xForce = keyboardMovementInput.x; // Adjust multiplier as needed
+        float targetXRot = xForce * 100f;
+        currentRotation = Mathf.MoveTowards(currentRotation, targetXRot, 250f * Time.deltaTime);
+        float crossbarRotation = Mathf.Clamp(currentRotation, -maxRotation, maxRotation);
+        return crossbarRotation;
+    }
+
+    Vector2 KeyboardCalculateJumpAccel()
+    {
+        float jumpStrength = keyboardMovementInput.y * 5.0f; // Adjust multiplier as needed
+        return new Vector2(0, jumpStrength);
+    }
+
+    Vector3 CalculateTension(Vector3 crossbarJointPosition, Vector3 modelJointPosition, float baseLength, float tensionMultiplier)
+    {
+        Vector3 modelToCrossbar = new Vector3();
+        modelToCrossbar = crossbarJointPosition - modelJointPosition;
+
+        float currentLength = modelToCrossbar.magnitude;
+        float stretchLength = currentLength - baseLength;
+
+        // with the clamp disabled, strings can also push if they are compressed: they act like stiff springs
+
+        //stretchLength = Mathf.Clamp(stretchLength, 0, 100);
+
+        return modelToCrossbar.normalized * stretchLength * tensionMultiplier;
+
     }
 
    
