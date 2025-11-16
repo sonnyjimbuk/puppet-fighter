@@ -11,7 +11,7 @@ public class CentralGameController : MonoBehaviour
     public TextMeshProUGUI timerTimeText; // Text UI element for displaying the timer time
     public GameObject[] playerObjects;
 
-    private lockPlayers = false;
+    private bool lockPlayers = false;
 
     private void Start()
     {
@@ -25,7 +25,7 @@ public class CentralGameController : MonoBehaviour
          timerSeconds -= Time.deltaTime;
         UpdateTimerDisplay();
       } else {
-        LockPlayers()
+        LockPlayers();
       }
        
     }
@@ -40,7 +40,7 @@ public class CentralGameController : MonoBehaviour
     private void LockPlayers()
     {
       if (!lockPlayers) {
-       foreach (player in playerObjects) 
+       foreach (GameObject player in playerObjects) 
        {
         // Add a Rigidbody component
         Rigidbody rb = player.AddComponent<Rigidbody>();
