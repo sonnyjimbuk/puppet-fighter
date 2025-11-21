@@ -11,6 +11,9 @@ public class MarionetteControl : MonoBehaviour
     Transform modelTransform;
     private Animator animator;
 
+
+    public int playerID;
+
     float crossbarRotation;
 
     public float xPos;
@@ -79,7 +82,6 @@ public class MarionetteControl : MonoBehaviour
     public float[] stick;
     public Vector3 gyro;
     public Vector3 accel;
-    public int jc_ind;
     public Quaternion orientation;
 
     // keyboard input section
@@ -89,9 +91,11 @@ public class MarionetteControl : MonoBehaviour
 
     int frameCounter = 0;
 
+    JoyconDualArmSwing joyconDualArmSwing;
+
     void Awake()
     {
-
+        joyconDualArmSwing = gameObject.GetComponent<JoyconDualArmSwing>();
     }
 
 
@@ -117,7 +121,7 @@ public class MarionetteControl : MonoBehaviour
         jumping = false;
 
         joycons = JoyconManager.Instance.j;
-        if (joycons.Count < jc_ind + 1)
+        if (joycons.Count < playerID + 1)
         {
             Debug.Log("Not enough Joy-Cons connected for the specified index!");
         }
@@ -126,6 +130,16 @@ public class MarionetteControl : MonoBehaviour
     void OnMove(InputValue value)
     {
         keyboardMovementInput = value.Get<Vector2>();
+    }
+
+    void OnLeftTrigger()
+    {
+        StartCoroutine(joyconDualArmSwing.SwingArm('L'));
+    }
+
+    void OnRightTrigger()
+    {
+        StartCoroutine(joyconDualArmSwing.SwingArm('R'));
     }
 
 
@@ -342,12 +356,12 @@ public class MarionetteControl : MonoBehaviour
     {
         if (joycons.Count > 0)
         {
-            if (jc_ind >= joycons.Count)
+            if (playerID >= joycons.Count)
             {
                 Debug.Log("Joycon index out of range!");
                 return false;
             }
-            j = joycons[jc_ind];
+            j = joycons[playerID];
             if (j == null)
             {
                 return false;
@@ -379,14 +393,11 @@ public class MarionetteControl : MonoBehaviour
     {
         if (j.GetButtonDown(Joycon.Button.SR))
         {
-            Debug.Log("Shoulder button 2 pressed");
+            StartCoroutine(joyconDualArmSwing.SwingArm('R'));
         }
         if (j.GetButtonDown(Joycon.Button.SL))
         {
-            Debug.Log("Shoulder button 1 pressed - Rumble activated");
-            // Rumble for 200 milliseconds, with low frequency rumble at 160 Hz and high frequency rumble at 320 Hz. For more information check:
-            //)
-            j.SetRumble(160, 320, 0.2f, 200);
+            StartCoroutine(joyconDualArmSwing.SwingArm('L'));
         }
     }
 
