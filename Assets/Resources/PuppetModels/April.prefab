@@ -153,7 +153,27 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
+    - target: {fileID: 5866666021909216657, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 9c1e0fcdfe5739e4087ecc6395e3ba2c, type: 2}
+    - target: {fileID: 5866666021909216657, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
+      propertyPath: m_AnimatePhysics
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
+      propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6587110842237423534, guid: b8d4607b91568ab4faf79eccf50d0cd5, type: 3}
