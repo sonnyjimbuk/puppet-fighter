@@ -35,8 +35,7 @@ public class JoyconDualArmSwing : MonoBehaviour
 
     void Start()
     {
-        // 🎯 Target
-
+        // 🎯 自动分配键位
         if (useLeftJoycon)
         {
             keyAttack1 = KeyCode.J;
