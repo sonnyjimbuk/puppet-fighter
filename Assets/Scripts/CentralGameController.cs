@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class CentralGameController : MonoBehaviour
 {
-    public int timerMinutes = 5;
+    //public int timerMinutes = 5;
     private float timerSeconds;
 
     public GameObject[] playerObjects;
@@ -11,10 +11,13 @@ public class CentralGameController : MonoBehaviour
 
     private bool lockedPlayers = false;
 
+    public float startTimeSeconds = 300f;
+
     void Start()
     {
-        timerSeconds = timerMinutes * 60f;
+      timerSeconds = startTimeSeconds;
     }
+
 
     void Update()
     {
