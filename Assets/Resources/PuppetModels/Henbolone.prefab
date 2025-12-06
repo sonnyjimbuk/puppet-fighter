@@ -56,6 +56,12 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4b5077cb8fb48c418ec5cfcc86acd8b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 314423151196031017}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4b5077cb8fb48c418ec5cfcc86acd8b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7040977599984201603}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: f4b5077cb8fb48c418ec5cfcc86acd8b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1470019013985000467}
@@ -778,6 +784,44 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &3373825007818013095 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f4b5077cb8fb48c418ec5cfcc86acd8b, type: 3}
+  m_PrefabInstance: {fileID: 2455396561138435318}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &314423151196031017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3373825007818013095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4e314d2a2c48d458895c663d0de1ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maximumForce: 1
+  _maximumForceTime: 0
+--- !u!114 &7040977599984201603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3373825007818013095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ee321bcbcd93ef41b8381f8e536d7ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera2: {fileID: 0}
+  _faceUpStandUpStateName: taunt1
+  _faceDownStandUpStateName: taunt2
+  _faceUpStandUpClipName: taunt3
+  _faceDownStandUpClipName: taunt4
+  _timeToResetBones: 0.2
+  TimeToWakeUp: 0.2
 --- !u!1 &4995630762554296210 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1781356600409242780, guid: f4b5077cb8fb48c418ec5cfcc86acd8b, type: 3}
