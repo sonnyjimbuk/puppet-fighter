@@ -333,6 +333,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2657945664335086048, guid: 28825709d79392c42a0221a924405921, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 280
+      objectReference: {fileID: 0}
+    - target: {fileID: 2741004466812369105, guid: 28825709d79392c42a0221a924405921, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 280
+      objectReference: {fileID: 0}
+    - target: {fileID: 5712861104633482320, guid: 28825709d79392c42a0221a924405921, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 280
+      objectReference: {fileID: 0}
+    - target: {fileID: 6713915106699281923, guid: 28825709d79392c42a0221a924405921, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 280
+      objectReference: {fileID: 0}
+    - target: {fileID: 8120872319721202135, guid: 28825709d79392c42a0221a924405921, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 280
+      objectReference: {fileID: 0}
     - target: {fileID: 8263863918703652977, guid: 28825709d79392c42a0221a924405921, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -966,6 +986,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1310330129142431181, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 218d1e4a61671e2499c7adef0af93620, type: 2}
     - target: {fileID: 2793684115013177155, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
       propertyPath: m_DefaultActionMap
       value: 6aa062d5-0b92-47e9-bb20-251d4959c7cf
@@ -1048,6 +1072,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1310330129142431181, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 218d1e4a61671e2499c7adef0af93620, type: 2}
     - target: {fileID: 5293979959716378771, guid: 7e15ae1da6fa3c646b2c9351a44ec5d0, type: 3}
       propertyPath: m_Name
       value: Player1
@@ -6149,13 +6177,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: CentralGameController
       objectReference: {fileID: 0}
+    - target: {fileID: 2470215037743855071, guid: 7a0f4681cdd214942be398272c155a20, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5199752582140087558, guid: 7a0f4681cdd214942be398272c155a20, type: 3}
       propertyPath: timerDisplay
       value: 
       objectReference: {fileID: 1550496700}
     - target: {fileID: 5199752582140087558, guid: 7a0f4681cdd214942be398272c155a20, type: 3}
       propertyPath: startTimeSeconds
-      value: 100
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 5199752582140087558, guid: 7a0f4681cdd214942be398272c155a20, type: 3}
       propertyPath: playerObjects.Array.size
@@ -7405,7 +7437,7 @@ PrefabInstance:
     - target: {fileID: 1501461147521968719, guid: 64759d2bfa2981d4b80548269cac537c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: -876546973899608171, guid: c0d77e676f3f0ef4ebbfb067fe81ae27, type: 3}
+      objectReference: {fileID: 2100000, guid: 218d1e4a61671e2499c7adef0af93620, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -7747,7 +7779,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1531089682
 RectTransform:
   m_ObjectHideFlags: 0
