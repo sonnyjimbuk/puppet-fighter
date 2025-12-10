@@ -76,13 +76,13 @@ public class MarionetteObjPickUpThrow : MonoBehaviour
         {
             if (isPlayer1 && leftJoycon != null)
             {
-                if (leftJoycon.GetButtonDown(Joycon.Button.SL)) pickupLeft = true;
-                if (leftJoycon.GetButtonDown(Joycon.Button.DPAD_LEFT)) dropPressed = true;
+                if (leftJoycon.GetButtonDown(Joycon.Button.SHOULDER_2)) pickupLeft = true;
+                if (leftJoycon.GetButtonDown(Joycon.Button.DPAD_DOWN)) dropPressed = true;
             }
             else if (!isPlayer1 && rightJoycon != null)
             {
-                if (rightJoycon.GetButtonDown(Joycon.Button.SR)) pickupRight = true;
-                if (rightJoycon.GetButtonDown(Joycon.Button.DPAD_RIGHT)) dropPressed = true;
+                if (rightJoycon.GetButtonDown(Joycon.Button.SHOULDER_2)) pickupRight = true;
+                if (rightJoycon.GetButtonDown(Joycon.Button.DPAD_DOWN)) dropPressed = true;
             }
         }
 

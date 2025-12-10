@@ -5,8 +5,8 @@ public class JoyconDualArmSwing : MonoBehaviour
 {
     [Header("Joy-Con Settings")]
     public bool useLeftJoycon = true; // ✅ 左 Joy-Con = P1 (J/K)，右 Joy-Con = P2 (1/2)
-    public Joycon.Button leftTrigger = Joycon.Button.DPAD_UP;  // ZL
-    public Joycon.Button rightTrigger = Joycon.Button.DPAD_DOWN; // ZR
+    public Joycon.Button leftTrigger = Joycon.Button.SHOULDER_2;  // ZL
+    public Joycon.Button rightTrigger = Joycon.Button.SHOULDER_1; // ZR
 
     [Header("Swing Settings")]
     [Range(0.1f, 2f)] public float swingDuration = 0.8f;
@@ -75,8 +75,8 @@ public class JoyconDualArmSwing : MonoBehaviour
         // 🎮 Joy-Con Attack
         if (joycon != null)
         {
-            if (canAttack1 && joycon.GetButtonDown(Joycon.Button.DPAD_RIGHT)) StartCoroutine(SwingArm(useLeftJoycon, true));
-            if (canAttack2 && joycon.GetButtonDown(Joycon.Button.DPAD_LEFT)) StartCoroutine(SwingArm(useLeftJoycon, false));
+            if (canAttack1 && joycon.GetButtonDown(rightTrigger)) StartCoroutine(SwingArm(useLeftJoycon, true));
+            if (canAttack2 && joycon.GetButtonDown(leftTrigger)) StartCoroutine(SwingArm(useLeftJoycon, false));
         }
 
         // ⌨ Keyboard Attack (J/K for P1, 1/2 for P2)
