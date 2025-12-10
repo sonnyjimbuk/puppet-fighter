@@ -20,6 +20,16 @@ public class CentralGameController : MonoBehaviour
     void Start()
     {
       timerSeconds = startTimeSeconds;
+
+      // initialize health
+      foreach (HealthBar hb in playerHealthBars)
+      {
+          if (hb != null)
+          {
+              hb.maxHealth = maxHealth;
+              hb.SetHealth(maxHealth);
+          }
+      }
     }
 
 
@@ -44,6 +54,29 @@ public class CentralGameController : MonoBehaviour
             LockPlayers();
         }
     }
+  
+public void ApplyHitToPlayer(int playerIndex)
+{
+    if (playerIndex < 0 || playerIndex >= playerHealthBars.Length)
+        return;
+
+    HealthBar hb = playerHealthBars[playerIndex];
+    //HealthBar hb = player.GetComponentInChildren<HealthBar>();
+
+    if (hb == null)
+        return;
+
+    float damageAmount = maxHealth / hitsToKill;
+    hb.TakeDamage(damageAmount);
+
+    // If health is zero — handle KO
+    if (hb.currentHealth <= 0)
+    {
+        Debug.Log($"Player {playerIndex} defeated.");
+        // You can freeze this player or deactivate their controls here
+    }
+}
+
 
   private void LockPlayers()
 {

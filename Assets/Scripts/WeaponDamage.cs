@@ -47,6 +47,12 @@ public class WeaponDamage : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(damage);
+
+		    // NEW: Also tell the CentralGameController to update UI
+    		//CentralGameController gcc = FindObjectOfType<CentralGameController>();
+    		//gcc?.ApplyHitToPlayer(hit.transform.root.gameObject);
+
+
                 lastHitTime = Time.time;
 
                 if (hitSound != null)
