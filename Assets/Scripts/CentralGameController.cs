@@ -8,6 +8,10 @@ public class CentralGameController : MonoBehaviour
 
     public GameObject[] playerObjects;
     public TimerDisplay timerDisplay;
+    public HealthBar[] playerHealthBars;
+    public float maxHealth = 100f;
+    public int hitsToKill = 5;
+
 
     private bool lockedPlayers = false;
 
